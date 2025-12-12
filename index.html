@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon IA, Mon Acheteur - v6 | AlerteRabais.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .animate-bounce-delay-1 { animation-delay: 150ms; }
+        .animate-bounce-delay-2 { animation-delay: 300ms; }
+    </style>
+</head>
+<body class="bg-gray-950">
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const MonIAMonAcheteurV6 = () => {
+            const [inputValue, setInputValue] = useState('');
+            const [isProcessing, setIsProcessing] = useState(false);
+            const [messages, setMessages] = useState([]);
+            const [alerts, setAlerts] = useState([]);
+            const [showResults, setShowResults] = useState(false);
+            const inputRef = useRef(null);
+            const messagesEndRef = useRef(null);
+
+            useEffect(() => {
+                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, [messages]);
+
+            const demoQueries = [
+                { text: "J'ai besoin d'un cadeau pour ma mère", icon: "🎁" },
+                { text: "Je veux une TV 65 pouces pas cher", icon: "📺" },
+                { text: "Trouve-moi des AirPods en rabais", icon: "🎧" },
+                { text: "Cadeaux pour 20 employés budget 50$", icon: "🏢" },
+            ];
+
+            const processQuery = async (query) => {
+                setIsProcessing(true);
+                setMessages(prev => [...prev, { type: 'user', text: query }]);
+                
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                const analysis = analyzeQuery(query);
+                
+                setMessages(prev => [...prev, { 
+                    type: 'ai', 
+                    text: analysis.response,
+                    detected: analysis.detected,
+                    alert: analysis.alert
+                }]);
+                
+                if (analysis.alert) {
+                    setAlerts(prev => [...prev, analysis.alert]);
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                setShowResults(true);
+                setIsProcessing(false);
+            };
+
+            const analyzeQuery = (query) => {
+                const q = query.toLowerCase();
+                
+                if (q.includes('cadeau') && (q.includes('mère') || q.includes('maman'))) {
+                    return {
+                        detected: { type: 'Cadeau', recipient: 'Maman', occasion: 'À déterminer' },
+                        response: "Parfait! Je cherche un cadeau pour ta mère. J'ai créé une alerte et je lance la recherche des meilleures offres...",
+                        alert: { id: Date.now(), name: 'Cadeau Maman', emoji: '👩', type: 'gift' }
+                    };
+                }
+                
+                if (q.includes('tv') || q.includes('télé')) {
+                    return {
+                        detected: { type: 'Produit', category: 'Électronique', product: 'TV 65"' },
+                        response: "Je surveille les TV 65 pouces pour toi. Alerte créée! Je te notifie dès qu'un bon deal apparaît.",
+                        alert: { id: Date.now(), name: 'TV 65"', emoji: '📺', type: 'product' }
+                    };
+                }
+                
+                if (q.includes('airpods')) {
+                    return {
+                        detected: { type: 'Produit', category: 'Audio', product: 'AirPods' },
+                        response: "AirPods en surveillance! Je compare les prix sur tous les marchands.",
+                        alert: { id: Date.now(), name: 'AirPods', emoji: '🎧', type: 'product' }
+                    };
+                }
+                
+                if (q.includes('employé') || q.includes('client')) {
+                    return {
+                        detected: { type: 'Corporate', quantity: '20', budget: '50$/personne' },
+                        response: "Commande corporate détectée! Je prépare une sélection pour 20 personnes à 50$ chacun.",
+                        alert: { id: Date.now(), name: 'Cadeaux Équipe x20', emoji: '🏢', type: 'bulk' }
+                    };
+                }
+                
+                return {
+                    detected: { type: 'Recherche', query: query.slice(0, 30) },
+                    response: "Je lance la recherche et je crée une alerte pour les meilleurs deals!",
+                    alert: { id: Date.now(), name: query.slice(0, 20) + '...', emoji: '🔍', type: 'search' }
+                };
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (inputValue.trim() && !isProcessing) {
+                    processQuery(inputValue.trim());
+                    setInputValue('');
+                }
+            };
+
+            const handleDemoClick = (query) => {
+                setInputValue(query);
+                inputRef.current?.focus();
+            };
+
+            const resetConversation = () => {
+                setMessages([]);
+                setAlerts([]);
+                setShowResults(false);
+                setInputValue('');
+            };
+
+            const mockResults = [
+                { id: 1, name: 'Coffret Spa Luxe', price: 89.99, oldPrice: 129.99, discount: 31, store: 'Amazon.ca', image: '🧴' },
+                { id: 2, name: 'Bijou Swarovski', price: 79.99, oldPrice: 120.00, discount: 33, store: 'Bijouterie.ca', image: '💎' },
+                { id: 3, name: 'Bouquet Préservé', price: 64.99, oldPrice: 89.99, discount: 28, store: 'Fleurs.ca', image: '💐' },
+                { id: 4, name: 'Coffret Thé Premium', price: 49.99, oldPrice: 69.99, discount: 29, store: 'Gourmet.ca', image: '🍵' },
+            ];
+
+            const urgentCount = alerts.length;
+
+            return (
+                <div className="min-h-screen bg-gray-950 flex flex-col">
+                    {/* Header */}
+                    <header className="bg-gray-900/50 backdrop-blur-xl border-b border-gray-800/30">
+                        <div className="max-w-5xl mx-auto px-6 py-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-xl flex items-center justify-center">
+                                        <span className="text-lg">🛒</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-semibold text-white">Mon IA</span>
+                                        <span className="text-cyan-400">, Mon Acheteur</span>
+                                    </div>
+                                </div>
+
+                                {alerts.length > 0 && (
+                                    <div className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full">
+                                        <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+                                        <span className="text-cyan-400 text-sm font-medium">{alerts.length} alerte{alerts.length > 1 ? 's' : ''}</span>
+                                    </div>
+                                )}
+
+                                {messages.length > 0 && (
+                                    <button onClick={resetConversation} className="text-gray-500 hover:text-white text-sm transition-colors">
+                                        Nouvelle conversation
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main */}
+                    <main className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6 py-8">
+                        
+                        {messages.length === 0 && (
+                            <div className="flex-1 flex flex-col items-center justify-center">
+                                <div className="text-center mb-12">
+                                    <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-cyan-500/20">
+                                        <span className="text-4xl">🤖</span>
+                                    </div>
+                                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                                        Dis-moi ce que tu veux.
+                                    </h1>
+                                    <p className="text-lg text-gray-400 max-w-md mx-auto">
+                                        Je trouve, je compare, je t'alerte.<br/>
+                                        <span className="text-cyan-400">C'est tout.</span>
+                                    </p>
+                                </div>
+
+                                <div className="w-full max-w-2xl">
+                                    <p className="text-sm text-gray-500 text-center mb-4">Essaie par exemple:</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {demoQueries.map((demo, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => handleDemoClick(demo.text)}
+                                                className="flex items-center gap-3 p-4 bg-gray-900/50 border border-gray-800/50 rounded-xl hover:border-cyan-500/30 hover:bg-gray-800/50 transition-all text-left group"
+                                            >
+                                                <span className="text-2xl group-hover:scale-110 transition-transform">{demo.icon}</span>
+                                                <span className="text-gray-300 text-sm">"{demo.text}"</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {messages.length > 0 && (
+                            <div className="flex-1 flex flex-col">
+                                <div className="flex-1 overflow-y-auto space-y-6 mb-6">
+                                    {messages.map((msg, i) => (
+                                        <div key={i} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                            {msg.type === 'user' ? (
+                                                <div className="max-w-md">
+                                                    <div className="bg-cyan-500 text-gray-900 px-5 py-3 rounded-2xl rounded-br-md">
+                                                        <p className="font-medium">{msg.text}</p>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="max-w-lg space-y-3">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                            <span className="text-sm">🤖</span>
+                                                        </div>
+                                                        <div className="bg-gray-800/80 border border-gray-700/50 px-5 py-3 rounded-2xl rounded-bl-md">
+                                                            <p className="text-gray-200">{msg.text}</p>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {msg.detected && (
+                                                        <div className="ml-11 bg-gray-900/80 border border-gray-800/50 rounded-xl p-4">
+                                                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Détecté automatiquement</p>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {Object.entries(msg.detected).map(([key, value]) => (
+                                                                    <span key={key} className="inline-flex items-center gap-1 px-3 py-1 bg-gray-800 rounded-full text-sm">
+                                                                        <span className="text-gray-500">{key}:</span>
+                                                                        <span className="text-cyan-400 font-medium">{value}</span>
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {msg.alert && (
+                                                        <div className="ml-11 bg-green-500/10 border border-green-500/20 rounded-xl p-4 flex items-center gap-3">
+                                                            <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                                                <span className="text-xl">{msg.alert.emoji}</span>
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <p className="text-green-400 font-medium text-sm">Alerte créée!</p>
+                                                                <p className="text-gray-400 text-sm">{msg.alert.name}</p>
+                                                            </div>
+                                                            <div className="flex items-center gap-1 px-2 py-1 bg-green-500/20 rounded-full">
+                                                                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                                                                <span className="text-green-400 text-xs">Active</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                    
+                                    {isProcessing && (
+                                        <div className="flex justify-start">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-lg flex items-center justify-center">
+                                                    <span className="text-sm">🤖</span>
+                                                </div>
+                                                <div className="bg-gray-800/80 border border-gray-700/50 px-5 py-3 rounded-2xl">
+                                                    <div className="flex gap-1">
+                                                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
+                                                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce animate-bounce-delay-1"></span>
+                                                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce animate-bounce-delay-2"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    <div ref={messagesEndRef} />
+                                </div>
+
+                                {showResults && (
+                                    <div className="mb-6 bg-gray-900/50 border border-gray-800/50 rounded-2xl p-6">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="font-semibold text-white flex items-center gap-2">
+                                                <span>🎯</span> Meilleures offres trouvées
+                                            </h3>
+                                            <span className="text-sm text-gray-500">{mockResults.length} résultats</span>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {mockResults.map(product => (
+                                                <div 
+                                                    key={product.id}
+                                                    className="bg-gray-800/50 border border-gray-700/30 rounded-xl p-4 hover:border-cyan-500/30 transition-all cursor-pointer group"
+                                                >
+                                                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{product.image}</div>
+                                                    <p className="text-sm font-medium text-white truncate mb-1">{product.name}</p>
+                                                    <p className="text-xs text-gray-500 mb-2">{product.store}</p>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-cyan-400 font-bold">{product.price}$</span>
+                                                        <span className="text-gray-500 text-xs line-through">{product.oldPrice}$</span>
+                                                        <span className="text-xs bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded">-{product.discount}%</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Input */}
+                        <div className="sticky bottom-0 bg-gradient-to-t from-gray-950 via-gray-950 to-transparent pt-6">
+                            <form onSubmit={handleSubmit} className="relative">
+                                <div className="relative">
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        placeholder="Je veux... J'ai besoin de... Trouve-moi..."
+                                        disabled={isProcessing}
+                                        className="w-full px-6 py-4 pr-14 bg-gray-900 border border-gray-700/50 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent text-lg disabled:opacity-50"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={!inputValue.trim() || isProcessing}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-cyan-500 hover:bg-cyan-400 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-xl flex items-center justify-center transition-colors"
+                                    >
+                                        <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p className="text-center text-xs text-gray-600 mt-3">
+                                    Tape naturellement • L'IA comprend et agit
+                                </p>
+                            </form>
+                        </div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="border-t border-gray-800/30 bg-gray-900/30 py-6">
+                        <div className="max-w-5xl mx-auto px-6 text-center">
+                            <p className="text-gray-500 text-sm">Maquette v6 — Mon IA, Mon Acheteur | AlerteRabais.com</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<MonIAMonAcheteurV6 />);
+    </script>
+</body>
+</html>
