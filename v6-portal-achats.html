@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon IA, Mon Acheteur | L'IA qui achète pour vous</title>
+    <meta name="description" content="L'intelligence artificielle qui trouve exactement ce que vous cherchez. Pour particuliers, entreprises et organisations.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           🧬 ADN DU SYSTÈME - VARIABLES CSS
+           Formule: SYSTÈME = Σ(IA) × Identité × TribuData / Complexité × e^(Évolution×Temps)
+           ═══════════════════════════════════════════════════════════════ */
+        
+        :root {
+            /* Core Colors */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-card: #15151f;
+            
+            /* Accent Colors */
+            --accent-cyan: #00d4ff;
+            --accent-cyan-glow: rgba(0, 212, 255, 0.3);
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            
+            /* Profile Colors */
+            --particulier-color: #00d4ff;
+            --entreprise-color: #10b981;
+            --organisation-color: #8b5cf6;
+            
+            /* Text */
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            
+            /* Borders */
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            /* Fonts */
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 5rem;
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 250ms ease;
+            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════════════ */
+        
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 212, 255, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(139, 92, 246, 0.05), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Grid Pattern Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           LAYOUT
+           ═══════════════════════════════════════════════════════════════ */
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page {
+            display: none;
+            flex: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════ */
+
+        .header {
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           PAGE 1: SELECTION PROFIL
+           ═══════════════════════════════════════════════════════════════ */
+
+        .page-profile {
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-xl);
+        }
+
+        .profile-content {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2xl);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .profile-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            cursor: pointer;
+            transition: var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-accent);
+            transform: scaleX(0);
+            transition: var(--transition-slow);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--card-accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px var(--card-glow);
+        }
+
+        .profile-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .profile-card[data-profile="particulier"] {
+            --card-accent: var(--particulier-color);
+            --card-glow: rgba(0, 212, 255, 0.1);
+        }
+
+        .profile-card[data-profile="entreprise"] {
+            --card-accent: var(--entreprise-color);
+            --card-glow: rgba(16, 185, 129, 0.1);
+        }
+
+        .profile-card[data-profile="organisation"] {
+            --card-accent: var(--organisation-color);
+            --card-glow: rgba(139, 92, 246, 0.1);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: var(--space-md);
+            transition: var(--transition-base);
+        }
+
+        .profile-card:hover .card-icon {
+            background: var(--card-accent);
+            transform: scale(1.05);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            color: var(--text-primary);
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: var(--space-md);
+            line-height: 1.7;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+        }
+
+        .card-feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: var(--transition-fast);
+        }
+
+        .profile-card:hover .card-feature {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        /* DNA Badge */
+        .dna-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .dna-badge code {
+            color: var(--accent-cyan);
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           PAGE 2: INTERFACE CONVERSATIONNELLE V6
+           ═══════════════════════════════════════════════════════════════ */
+
+        .page-search {
+            padding: var(--space-lg);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Profile Indicator */
+        .profile-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-secondary);
+            border-radius: 100px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .profile-indicator .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--current-profile-color, var(--accent-cyan));
+        }
+
+        .profile-indicator span {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .profile-indicator .profile-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .btn-change-profile {
+            background: none;
+            border: none;
+            color: var(--accent-cyan);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+        }
+
+        .btn-change-profile:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .welcome-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Adaptations par profil */
+        .page-search[data-profile="particulier"] {
+            --current-profile-color: var(--particulier-color);
+        }
+        
+        .page-search[data-profile="entreprise"] {
+            --current-profile-color: var(--entreprise-color);
+        }
+        
+        .page-search[data-profile="organisation"] {
+            --current-profile-color: var(--organisation-color);
+        }
+
+        /* Search Box */
+        .search-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            transition: var(--transition-base);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--current-profile-color, var(--accent-cyan));
+            box-shadow: 0 0 30px var(--card-glow, rgba(0, 212, 255, 0.1));
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .search-tab {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+
+        .search-tab:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .search-tab.active {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-textarea {
+            width: 100%;
+            min-height: 100px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .search-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-md);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .search-options {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .option-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 0.5rem 0.875rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition-fast);
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-hover);
+        }
+
+        .option-btn.active {
+            background: var(--current-profile-color, var(--accent-cyan));
+            border-color: transparent;
+            color: var(--bg-primary);
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, var(--current-profile-color, var(--accent-cyan)), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: var(--radius-md);
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-base);
+        }
+
+        .btn-search:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-search:active {
+            transform: scale(0.98);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: var(--space-lg);
+        }
+
+        .quick-actions-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .quick-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+        }
+
+        .quick-chip {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .quick-chip:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--current-profile-color, var(--accent-cyan));
+            color: var(--text-primary);
+        }
+
+        /* Results Area */
+        .results-area {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            min-height: 300px;
+        }
+
+        .results-placeholder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .results-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+            opacity: 0.5;
+        }
+
+        .results-placeholder p {
+            max-width: 300px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TRIBU SECTION (Particulier only)
+           ═══════════════════════════════════════════════════════════════ */
+
+        .tribu-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            display: none;
+        }
+
+        .page-search[data-profile="particulier"] .tribu-section {
+            display: block;
+        }
+
+        .tribu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+
+        .tribu-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .tribu-members {
+            display: flex;
+            gap: var(--space-xs);
+        }
+
+        .tribu-member {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .tribu-member:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .tribu-member.active {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan-glow);
+        }
+
+        .tribu-add {
+            background: transparent;
+            border: 2px dashed var(--border-subtle);
+            color: var(--text-muted);
+        }
+
+        .tribu-add:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════ */
+
+        .footer {
+            padding: var(--space-md) var(--space-lg);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: var(--text-secondary);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════════════════ */
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           LOADING STATES
+           ═══════════════════════════════════════════════════════════════ */
+
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════════ */
+
+        @media (max-width: 768px) {
+            .header {
+                padding: var(--space-sm);
+            }
+
+            .page-profile {
+                padding: var(--space-md);
+            }
+
+            .profile-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .search-options {
+                flex-wrap: wrap;
+            }
+
+            .search-actions {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .btn-search {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: var(--space-sm);
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo" onclick="showPage('profile')">
+                <div class="logo-icon">🤖</div>
+                <span>Mon IA, Mon Acheteur</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn-ghost">Connexion</button>
+            </div>
+        </header>
+
+        <!-- PAGE 1: SELECTION PROFIL -->
+        <main class="page page-profile active" id="page-profile">
+            <div class="profile-content">
+                <h1 class="page-title animate-in">Qui cherche aujourd'hui?</h1>
+                <p class="page-subtitle animate-in delay-1">
+                    L'IA qui trouve exactement ce que vous cherchez, adaptée à vos besoins.
+                </p>
+
+                <div class="profile-cards">
+                    <!-- Particulier -->
+                    <div class="profile-card animate-in delay-2" data-profile="particulier" onclick="selectProfile('particulier')">
+                        <div class="card-icon">👤</div>
+                        <h3 class="card-title">Particulier</h3>
+                        <p class="card-description">
+                            Pour vous et votre famille. Créez votre Tribu, partagez vos découvertes et recevez des recommandations personnalisées.
+                        </p>
+                        <div class="card-features">
+                            <span class="card-feature">👨‍👩‍👧 Ma Tribu</span>
+                            <span class="card-feature">🎁 Cadeaux</span>
+                            <span class="card-feature">🔔 Alertes</span>
+                            <span class="card-feature">💰 Économies</span>
+                        </div>
+                    </div>
+
+                    <!-- Entreprise -->
+                    <div class="profile-card animate-in delay-3" data-profile="entreprise" onclick="selectProfile('entreprise')">
+                        <div class="card-icon">🏢</div>
+                        <h3 class="card-title">Entreprise</h3>
+                        <p class="card-description">
+                            Solutions d'achat pour PME et grandes entreprises. Gestion des achats groupés, factures et suivi budgétaire.
+                        </p>
+                        <div class="card-features">
+                            <span class="card-feature">📊 Rapports</span>
+                            <span class="card-feature">🧾 Factures</span>
+                            <span class="card-feature">👥 Équipes</span>
+                            <span class="card-feature">💼 B2B</span>
+                        </div>
+                    </div>
+
+                    <!-- Organisation -->
+                    <div class="profile-card animate-in delay-4" data-profile="organisation" onclick="selectProfile('organisation')">
+                        <div class="card-icon">🏛️</div>
+                        <h3 class="card-title">Organisation</h3>
+                        <p class="card-description">
+                            Pour institutions, gouvernements et OBNL. Processus d'approbation, conformité et traçabilité complète.
+                        </p>
+                        <div class="card-features">
+                            <span class="card-feature">🔒 Sécurisé</span>
+                            <span class="card-feature">✅ Conformité</span>
+                            <span class="card-feature">📋 Approbations</span>
+                            <span class="card-feature">🏦 Institutionnel</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dna-badge animate-in delay-4">
+                    <span>🧬</span>
+                    <span>Propulsé par</span>
+                    <code>Σ(IA) × e^(Évolution)</code>
+                </div>
+            </div>
+        </main>
+
+        <!-- PAGE 2: INTERFACE RECHERCHE V6 -->
+        <main class="page page-search" id="page-search" data-profile="particulier">
+            <div class="search-container">
+                <!-- Profile Indicator -->
+                <div class="profile-indicator">
+                    <div class="indicator-dot"></div>
+                    <span>Mode:</span>
+                    <span class="profile-name" id="current-profile-name">Particulier</span>
+                    <button class="btn-change-profile" onclick="showPage('profile')">Changer</button>
+                </div>
+
+                <!-- Welcome -->
+                <div class="welcome-section">
+                    <h2 class="welcome-title" id="welcome-title">Bonjour! 👋</h2>
+                    <p class="welcome-subtitle" id="welcome-subtitle">
+                        Dites-moi ce que vous cherchez, je m'occupe du reste.
+                    </p>
+                </div>
+
+                <!-- Ma Tribu (Particulier only) -->
+                <div class="tribu-section">
+                    <div class="tribu-header">
+                        <span class="tribu-title">👨‍👩‍👧 Ma Tribu</span>
+                    </div>
+                    <div class="tribu-members">
+                        <div class="tribu-member active" title="Moi">😊</div>
+                        <div class="tribu-member" title="Conjoint(e)">❤️</div>
+                        <div class="tribu-member" title="Fils">👦</div>
+                        <div class="tribu-member" title="Fille">👧</div>
+                        <div class="tribu-member tribu-add" title="Ajouter">+</div>
+                    </div>
+                </div>
+
+                <!-- Search Box -->
+                <div class="search-box">
+                    <div class="search-tabs">
+                        <button class="search-tab active">Je veux...</button>
+                        <button class="search-tab">J'ai besoin de...</button>
+                        <button class="search-tab">Je cherche...</button>
+                    </div>
+                    <div class="search-input-wrapper">
+                        <textarea 
+                            class="search-textarea" 
+                            id="search-input"
+                            placeholder="Décrivez ce que vous recherchez en quelques mots..."
+                        ></textarea>
+                    </div>
+                    <div class="search-actions">
+                        <div class="search-options">
+                            <button class="option-btn" data-option="budget">
+                                💰 Budget
+                            </button>
+                            <button class="option-btn" data-option="urgent">
+                                ⚡ Urgent
+                            </button>
+                            <button class="option-btn" data-option="local">
+                                🍁 Local
+                            </button>
+                        </div>
+                        <button class="btn-search" onclick="performSearch()">
+                            <span>🔍</span>
+                            Trouver
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-actions-title">Suggestions rapides</div>
+                    <div class="quick-chips" id="quick-chips">
+                        <!-- Populated by JS based on profile -->
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-area">
+                    <div class="results-placeholder" id="results-placeholder">
+                        <div class="results-placeholder-icon">🎯</div>
+                        <p>Vos résultats personnalisés apparaîtront ici</p>
+                    </div>
+                    <div id="results-content" style="display: none;"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#">Confidentialité</a>
+                <a href="#">Conditions</a>
+                <a href="#">Contact</a>
+            </div>
+            <div>© 2025 Mon IA, Mon Acheteur — Propulsé par l'ADN évolutif</div>
+        </footer>
+    </div>
+
+    <script>
+        /* ═══════════════════════════════════════════════════════════════════════════
+           🧬 ADN DU SYSTÈME - CODE GÉNÉTIQUE ALERTERABAIS
+           
+           FORMULE DE DOMINATION PERPÉTUELLE:
+           ═══════════════════════════════════════════════════════════════════════════
+           
+           SYSTÈME = Σ(Toutes les IA) × Identité QC × Tribu Data
+                     ─────────────────────────────────────────────
+                              Complexité Utilisateur
+           
+                     × e^(Auto_Amélioration × Temps)
+           
+           = IMPOSSIBLE À RATTRAPER 🚀
+           
+           ═══════════════════════════════════════════════════════════════════════════
+           
+           COMPOSANTS:
+           - Σ(IA) = Google Shopping + Perplexity + OpenAI + Grok + CamelCamel + Amazon
+           - Identité = Ton québécois authentique (INCOPIABLE)
+           - Tribu Data = Données famille exclusives (Network Effects)
+           - Complexité → 0 (On simplifie toujours)
+           - Auto_Amélioration > 0 (TOUJOURS)
+           
+           LES 5 MOATS INFRANCHISSABLES:
+           1. 🏰 Identité Culturelle - Authentique, pas simulable
+           2. 👨‍👩‍👧‍👦 Données Tribu - Network effects exponentiels
+           3. 🔄 Network Effects - Plus de Tribus = Meilleurs deals
+           4. 🤖 Orchestration Multi-IA - Résultat supérieur à toute IA seule
+           5. 📈 Auto-amélioration - Avance compétitive croissante
+           
+           ═══════════════════════════════════════════════════════════════════════════ */
+
+        // Configuration par profil
+        const PROFILES = {
+            particulier: {
+                name: 'Particulier',
+                color: '#00d4ff',
+                welcomeTitle: 'Bonjour! 👋',
+                welcomeSubtitle: 'Dites-moi ce que vous cherchez, je m\'occupe du reste.',
+                placeholder: 'Ex: Un cadeau pour mon fils gamer, budget 150$...',
+                quickChips: [
+                    '🎁 Cadeau anniversaire',
+                    '🎮 Gaming',
+                    '👨‍👩‍👧 Pour la famille',
+                    '💰 Meilleur prix',
+                    '🍁 Fait au Québec',
+                    '🔥 Tendances'
+                ],
+                tone: 'chaleureux' // Ton québécois amical
+            },
+            entreprise: {
+                name: 'Entreprise',
+                color: '#10b981',
+                welcomeTitle: 'Bienvenue',
+                welcomeSubtitle: 'Optimisez vos achats d\'entreprise avec l\'IA.',
+                placeholder: 'Ex: 50 ordinateurs portables pour notre équipe...',
+                quickChips: [
+                    '💻 Équipement IT',
+                    '🪑 Mobilier bureau',
+                    '📦 Fournitures',
+                    '🎁 Cadeaux clients',
+                    '📊 Comparatif fournisseurs',
+                    '🧾 Devis rapide'
+                ],
+                tone: 'professionnel' // Sobre et efficace
+            },
+            organisation: {
+                name: 'Organisation',
+                color: '#8b5cf6',
+                welcomeTitle: 'Portail Achats Sécurisé',
+                welcomeSubtitle: 'Processus d\'achat conforme et traçable.',
+                placeholder: 'Ex: Mobilier pour salle de conférence, budget approuvé...',
+                quickChips: [
+                    '🏛️ Institutionnel',
+                    '📋 Appel d\'offres',
+                    '✅ Pré-approuvé',
+                    '🔒 Fournisseurs certifiés',
+                    '📊 Rapport conformité',
+                    '🏦 Secteur public'
+                ],
+                tone: 'formel' // Officiel et sécurisé
+            }
+        };
+
+        let currentProfile = 'particulier';
+
+        // ═══════════════════════════════════════════════════════════════
+        // NAVIGATION
+        // ═══════════════════════════════════════════════════════════════
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('page-' + pageId).classList.add('active');
+        }
+
+        function selectProfile(profile) {
+            currentProfile = profile;
+            const config = PROFILES[profile];
+            
+            // Update search page
+            const searchPage = document.getElementById('page-search');
+            searchPage.setAttribute('data-profile', profile);
+            
+            // Update profile indicator
+            document.getElementById('current-profile-name').textContent = config.name;
+            
+            // Update welcome text
+            document.getElementById('welcome-title').textContent = config.welcomeTitle;
+            document.getElementById('welcome-subtitle').textContent = config.welcomeSubtitle;
+            
+            // Update placeholder
+            document.getElementById('search-input').placeholder = config.placeholder;
+            
+            // Update quick chips
+            const chipsContainer = document.getElementById('quick-chips');
+            chipsContainer.innerHTML = config.quickChips.map(chip => 
+                `<button class="quick-chip" onclick="insertChip('${chip}')">${chip}</button>`
+            ).join('');
+            
+            // Show search page
+            showPage('search');
+            
+            // Log for analytics (ADN: Auto-amélioration)
+            logEvent('profile_selected', { profile: profile });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // SEARCH FUNCTIONALITY
+        // ═══════════════════════════════════════════════════════════════
+
+        function insertChip(text) {
+            const input = document.getElementById('search-input');
+            const cleanText = text.replace(/^[^\s]+\s/, ''); // Remove emoji prefix
+            input.value = input.value ? input.value + ', ' + cleanText : cleanText;
+            input.focus();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            
+            if (!query) {
+                shakeElement(document.querySelector('.search-box'));
+                return;
+            }
+            
+            // Show loading
+            const resultsContent = document.getElementById('results-content');
+            const placeholder = document.getElementById('results-placeholder');
+            
+            placeholder.innerHTML = `
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <p style="margin-top: 1rem;">Recherche en cours...</p>
+            `;
+            
+            // Simulate API call (replace with real backend)
+            setTimeout(() => {
+                displayResults(query);
+            }, 1500);
+            
+            // Log for analytics (ADN: Feedback loop)
+            logEvent('search_performed', { 
+                query: query, 
+                profile: currentProfile,
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        function displayResults(query) {
+            const config = PROFILES[currentProfile];
+            const placeholder = document.getElementById('results-placeholder');
+            const resultsContent = document.getElementById('results-content');
+            
+            // Generate mock results based on profile tone
+            let resultsHTML = '';
+            
+            if (currentProfile === 'particulier') {
+                resultsHTML = `
+                    <div style="color: var(--text-primary);">
+                        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            🎯 <span>Voici ce que j'ai trouvé pour toi!</span>
+                        </h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            Basé sur ta recherche: "${query}"
+                        </p>
+                        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                            <p style="color: var(--accent-cyan);">🔌 Connexion au backend en attente...</p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                                Les résultats réels apparaîtront une fois le système connecté.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else if (currentProfile === 'entreprise') {
+                resultsHTML = `
+                    <div style="color: var(--text-primary);">
+                        <h3 style="margin-bottom: 1rem;">Résultats de recherche</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            Requête: "${query}"
+                        </p>
+                        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 12px;">
+                            <p style="color: var(--entreprise-color);">⏳ En attente de connexion API</p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                                Le module B2B sera activé prochainement.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultsHTML = `
+                    <div style="color: var(--text-primary);">
+                        <h3 style="margin-bottom: 1rem;">Rapport de recherche sécurisé</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            Requête institutionnelle: "${query}"
+                        </p>
+                        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 12px;">
+                            <p style="color: var(--organisation-color);">🔒 Module conformité en cours d'activation</p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                                Les fonctionnalités institutionnelles seront disponibles sous peu.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            placeholder.style.display = 'none';
+            resultsContent.innerHTML = resultsHTML;
+            resultsContent.style.display = 'block';
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // UI HELPERS
+        // ═══════════════════════════════════════════════════════════════
+
+        function shakeElement(element) {
+            element.style.animation = 'none';
+            element.offsetHeight; // Trigger reflow
+            element.style.animation = 'shake 0.5s ease';
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                20%, 60% { transform: translateX(-5px); }
+                40%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Search tabs
+        document.querySelectorAll('.search-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Option buttons
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        // Tribu members
+        document.querySelectorAll('.tribu-member:not(.tribu-add)').forEach(member => {
+            member.addEventListener('click', function() {
+                document.querySelectorAll('.tribu-member').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Enter key to search
+        document.getElementById('search-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // ANALYTICS & FEEDBACK LOOP (ADN: Auto-amélioration)
+        // ═══════════════════════════════════════════════════════════════
+
+        function logEvent(eventName, data) {
+            // ADN: Cette fonction alimente le système d'auto-amélioration
+            // En production: envoyer à l'API backend pour analyse
+            console.log(`[ADN] Event: ${eventName}`, data);
+            
+            // Future: POST to /api/analytics
+            /*
+            fetch('/api/analytics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: eventName, data: data })
+            });
+            */
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // INITIALIZATION
+        // ═══════════════════════════════════════════════════════════════
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with default profile chips
+            const defaultChips = PROFILES.particulier.quickChips;
+            document.getElementById('quick-chips').innerHTML = defaultChips.map(chip => 
+                `<button class="quick-chip" onclick="insertChip('${chip}')">${chip}</button>`
+            ).join('');
+            
+            // Log page view
+            logEvent('page_view', { page: 'home' });
+        });
+
+        /* ═══════════════════════════════════════════════════════════════
+           🧬 FIN DU CODE GÉNÉTIQUE
+           
+           Ce système est un ORGANISME VIVANT qui:
+           - Se nourrit de l'évolution de toutes les IA du monde
+           - Possède une identité INCOPIABLE
+           - S'améliore AUTOMATIQUEMENT chaque jour
+           - Crée un fossé concurrentiel qui S'ÉLARGIT avec le temps
+           
+           RÉSULTAT: IMPOSSIBLE À RATTRAPER 🚀
+           ═══════════════════════════════════════════════════════════════ */
+    </script>
+</body>
+</html>
